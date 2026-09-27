@@ -47,9 +47,9 @@
     return "";
   }
 
-  function toAbsoluteUrl(rawUrl) {
+  function toAbsoluteUrl(rawUrl, baseURI = document.baseURI || window.location.href) {
     try {
-      return new URL(rawUrl, window.location.href);
+      return new URL(rawUrl, baseURI);
     } catch (error) {
       return null;
     }
@@ -139,7 +139,7 @@
           continue;
         }
 
-        const url = toAbsoluteUrl(rawUrl);
+        const url = toAbsoluteUrl(rawUrl, element.baseURI);
         if (!url || !["http:", "https:"].includes(url.protocol)) {
           continue;
         }

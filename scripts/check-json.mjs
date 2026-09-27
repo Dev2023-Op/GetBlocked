@@ -2,7 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const defaultRootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const rootDir = process.argv[2] ? path.resolve(process.argv[2]) : defaultRootDir;
 const files = [
   "manifest.json",
   "rules/rules.json",
@@ -13,7 +14,15 @@ const files = [
 ];
 
 for (const file of files) {
-  JSON.parse(fs.readFileSync(path.join(rootDir, file), "utf8"));
+  try {
+    JSON.parse(fs.readFileSync(path.join(rootDir, file), "utf8"));
+  } catch (error) {
+    console.error(`JSON validation failed for ${file}: ${error.message}`);
+    process.exitCode = 1;
+    break;
+  }
 }
 
-console.log(`JSON OK (${files.length} files)`);
+if (process.exitCode !== 1) {
+  console.log(`JSON OK (${files.length} files)`);
+}
