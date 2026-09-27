@@ -54,6 +54,105 @@ test("evidence CLI keeps successful coverage output", () => {
   assert.match(result.output, /PASS:/);
 });
 
+test("JSON checker identifies malformed and missing files and preserves valid output", (t) => {
+  const dir = tempDir(t);
+  const files = [
+    "manifest.json",
+    "rules/rules.json",
+    "shared/tracker-catalog.json",
+    "shared/tracking-params.json",
+    "test/tracker-test-set.json",
+    "package.json"
+  ];
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    fs.writeFileSync(filePath, "{}\n");
+  }
+
+  const checker = path.join(root, "scripts/check-json.mjs");
+  const valid = run(checker, [dir]);
+  assert.equal(valid.status, 0, valid.output);
+  assert.match(valid.output, /JSON OK \(6 files\)/);
+
+  fs.writeFileSync(path.join(dir, "manifest.json"), "{ invalid JSON }\n");
+  const malformed = run(checker, [dir]);
+  assert.equal(malformed.status, 1, malformed.output);
+  assert.match(malformed.output, /manifest\.json: .*JSON|manifest\.json: .*position/i);
+
+  fs.rmSync(path.join(dir, "manifest.json"));
+  const missing = run(checker, [dir]);
+  assert.equal(missing.status, 1, missing.output);
+  assert.match(missing.output, /manifest\.json: .*ENOENT/);
+});
+
+test("content scan resolves relative resources against the document base URI", () => {
+  const config = readJson("shared/tracker-catalog.json");
+  const trackerDomain = config.trackers[0].domain;
+  const source = fs.readFileSync(path.join(root, "content-script.js"), "utf8");
+
+  function scan({ pageUrl, baseURI, elements }) {
+    const messages = [];
+    const context = vm.createContext({
+      chrome: {
+        runtime: {
+          id: "test-extension",
+          sendMessage: message => {
+            messages.push(message);
+            return Promise.resolve();
+          }
+        }
+      },
+      window: {
+        location: new URL(pageUrl),
+        getComputedStyle: () => ({ display: "block", visibility: "visible", opacity: "1" })
+      },
+      document: { baseURI, querySelectorAll: () => elements },
+      HTMLElement: class HTMLElement {},
+      URL
+    });
+    vm.runInContext(fs.readFileSync(path.join(root, "shared/config.js"), "utf8"), context);
+
+    for (const element of elements) {
+      element.getBoundingClientRect = () => ({ width: 10, height: 10 });
+      element.matches = selector => selector === "script,link" ? false : selector.includes("img[src]");
+      Object.setPrototypeOf(element, context.HTMLElement.prototype);
+    }
+    vm.runInContext(source, context);
+    return messages[0]?.payload;
+  }
+
+  const resource = (src, elementBaseURI) => ({
+    baseURI: elementBaseURI,
+    hasAttribute: name => name === "src",
+    getAttribute: name => name === "src" ? src : null
+  });
+
+  const based = scan({
+    pageUrl: "https://site.example.test/page",
+    baseURI: "https://site.example.test/page",
+    elements: [resource("collect", `https://${trackerDomain}/assets/`)]
+  });
+  assert.equal(based.estimatedTrackerRequests, 1);
+  assert.equal(based.trackerElementsDetected, 1);
+
+  const ordinaryPage = scan({
+    pageUrl: "https://site.example.test/page",
+    baseURI: "https://site.example.test/page",
+    elements: [resource("collect")]
+  });
+  assert.equal(ordinaryPage.estimatedTrackerRequests, 0);
+  assert.equal(ordinaryPage.trackerElementsDetected, 0);
+
+  const absolute = scan({
+    pageUrl: "https://site.example.test/page",
+    baseURI: "https://other.example.test/base/",
+    elements: [resource(`https://${trackerDomain}/collect`, "https://other.example.test/base/")]
+  });
+  assert.equal(absolute.estimatedTrackerRequests, 1);
+  assert.equal(absolute.trackerElementsDetected, 1);
+});
+
 test("overlap detection handles normalization, ancestors, siblings and suffix boundaries", () => {
   assert.deepEqual(findCatalogOverlaps([
     entry(" Example.com "), entry("A.EXAMPLE.COM"), entry("b.a.example.com"),
