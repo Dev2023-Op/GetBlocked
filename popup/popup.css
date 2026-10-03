@@ -211,13 +211,6 @@ h1 {
   opacity: 0.6;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .switch-track,
-  .switch-track::after {
-    transition: none;
-  }
-}
-
 .stat {
   display: flex;
   align-items: center;
@@ -322,4 +315,11 @@ h1 {
 .footer.is-warning .status-dot {
   background: var(--warning);
   box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch-track,
+  .switch-track::after {
+    transition: none;
+  }
 }
