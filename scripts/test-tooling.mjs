@@ -7,6 +7,7 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
 import { findCatalogOverlaps } from "./catalog-overlaps.mjs";
+import { selectExtensionTarget } from "./browser-targets.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const readJson = (file) => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
@@ -52,6 +53,55 @@ test("evidence CLI keeps successful coverage output", () => {
   assert.match(result.output, /Category coverage:/);
   assert.match(result.output, /Reduction: 100.0%/);
   assert.match(result.output, /PASS:/);
+});
+
+test("evidence CLI enforces exact landing URL expectations", (t) => {
+  const dir = tempDir(t);
+  const fixturePath = path.join(dir, "landing.json");
+  const url = "https://app.example.test/invite?ref=invite42&utm_source=mail";
+  for (const [expectedUrl, status] of [
+    ["https://app.example.test/invite?ref=invite42", 0],
+    ["https://app.example.test/invite", 1],
+    [url, 1]
+  ]) {
+    fs.writeFileSync(fixturePath, JSON.stringify({ name: "Landing regression", pages: [], landingUrls: [],
+      landingUrlChecks: [{ url, expectedUrl }] }));
+    const result = run(path.join(root, "scripts/evaluate-test-set.mjs"), [fixturePath]);
+    assert.equal(result.status, status, result.output);
+    if (status) assert.match(result.output, /FAIL: landing URL.*expected.*got/);
+  }
+});
+
+test("browser CLI skips locally and fails in required mode when Chrome is missing", (t) => {
+  const dir = tempDir(t);
+  for (const required of [false, true]) {
+    const result = spawnSync(process.execPath,
+      [path.join(root, "scripts/browser-test.mjs"), ...(required ? ["--required"] : [])], {
+        encoding: "utf8", timeout: 10000,
+        env: { ...process.env, CHROME_PATH: path.join(dir, "missing-chrome") }
+      });
+    assert.ifError(result.error);
+    const output = result.stdout + result.stderr;
+    assert.equal(result.status, required ? 1 : 0, output);
+    assert.match(output, required ? /FAIL.*Required browser/ : /SKIP:/);
+    assert.doesNotMatch(output, /All checks passed/);
+  }
+});
+
+test("browser target selection ignores unrelated and stale background workers", async () => {
+  const manifest = { name: "GetBlocked!", version: "0.2.0", background: { service_worker: "background.js" } };
+  const worker = id => ({ type: "service_worker", url: `chrome-extension://${id}/background.js`, webSocketDebuggerUrl: `ws://${id}` });
+  const targets = [worker("unrelated"), worker("stale"), worker("wrong-version"), worker("wrong-id"), worker("getblocked")];
+  const probe = async target => {
+    const id = new URL(target.url).hostname;
+    if (id === "stale") throw new Error("Worker closed");
+    return { id: id === "wrong-id" ? "other" : id,
+      name: id === "unrelated" ? "Other extension" : manifest.name,
+      version: id === "wrong-version" ? "0.1.0" : manifest.version };
+  };
+  assert.equal(await selectExtensionTarget(targets, manifest, probe), targets[4]);
+  assert.equal(await selectExtensionTarget(targets.slice(0, 4), manifest, probe), null);
+  assert.equal(await selectExtensionTarget([{ ...worker("getblocked"), type: "page" }], manifest, probe), null);
 });
 
 test("JSON checker identifies malformed and missing files and preserves valid output", (t) => {
