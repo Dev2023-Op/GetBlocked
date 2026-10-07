@@ -186,6 +186,8 @@ Both declarations run in matching web frames. The interceptor checks every desti
 
 GetBlocked! uses Manifest V3 and `declarativeNetRequest`.
 
+For plain-language explanations of extension and tracking terms, see the [GetBlocked! Glossary](GLOSSARY.md).
+
 The generated static ruleset intentionally keeps two stable rule IDs. `BLOCK_RULE_ID` (`1`) blocks catalog domains in normal mode. `CLEAN_URL_RULE_ID` (`1000`) removes tracking parameters from top-level navigation. `updateStaticRules()` disables only rule `1` in Decoy Mode and explicitly leaves rule `1000` enabled. The service worker reapplies the saved state on install/update and browser startup because static-rule overrides do not survive extension updates.
 
 Avoid:

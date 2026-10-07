@@ -133,6 +133,8 @@ The easiest way to contribute is to add one tracker domain.
 
 PRs are welcome for tracker-domain additions, broken-site tests, UI polish, docs, and test improvements. You do not need to ask before opening a small, focused PR.
 
+For common extension and tracking terms, see the [GetBlocked! Glossary](docs/GLOSSARY.md).
+
 ## How The Tracker Catalog Works
 
 Tracker domains are maintained in [shared/tracker-catalog.json](shared/tracker-catalog.json).
