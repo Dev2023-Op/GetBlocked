@@ -53,6 +53,110 @@ Decoy Mode can replace supported fields in:
 
 Binary, locked, already-consumed, unsupported, and streaming bodies pass through unchanged. Image pixels, script tags, iframes, CSS resources, HTML form navigation, WebSockets, WebTransport, and browser- or library-internal traffic that bypasses the wrapped APIs are not rewritten. A very early request may also run before the asynchronous session configuration reaches the main-world wrapper.
 
+### Static Request Transformation Examples
+
+The examples below illustrate how Decoy Mode transforms supported fields in existing, catalog-matched third-party tracker requests. They are **static examples only**: no requests are executed or sent.
+
+For illustration, assume a page on `https://example.com` makes an existing request to the catalog-matched endpoint `https://api.segment.io/v1/track`.
+
+The illustrative fake session profile contains:
+
+```json
+{
+  "userId": "user_demo_42",
+  "sessionId": "session_demo_42",
+  "email": "casey.reed@example.invalid"
+}
+```
+
+These profile values are illustrative, not actual generated values. The email uses the reserved `.invalid` domain. Decoy Mode uses its own generated session profile in practice.
+
+#### JSON Body
+
+Content-Type: `application/json`
+
+**Before replacement:**
+
+```json
+{
+  "event": "page_view",
+  "user_id": "original-user-123",
+  "session_id": "original-session-456",
+  "properties": {
+    "email": "person@example.com",
+    "product": "demo-product",
+    "quantity": 2,
+    "amount": 19.95,
+    "currency": "USD"
+  }
+}
+```
+
+**After replacement:**
+
+```json
+{
+  "event": "page_view",
+  "user_id": "user_demo_42",
+  "session_id": "session_demo_42",
+  "properties": {
+    "email": "casey.reed@example.invalid",
+    "product": "demo-product",
+    "quantity": 2,
+    "amount": 19.95,
+    "currency": "USD"
+  }
+}
+```
+
+Only supported identifier and profile fields change. The event name, product, quantity, amount, and currency remain unchanged.
+
+#### URL-Encoded Body
+
+Content-Type: `application/x-www-form-urlencoded`
+
+**Before replacement:**
+
+```text
+event=page_view&user_id=original-user-123&session_id=original-session-456&product=demo-product&quantity=2&amount=19.95&currency=USD
+```
+
+**After replacement:**
+
+```text
+event=page_view&user_id=user_demo_42&session_id=session_demo_42&product=demo-product&quantity=2&amount=19.95&currency=USD
+```
+
+The `user_id` and `session_id` fields are replaced using the same illustrative fake session profile. All other fields retain their original values.
+
+#### Unsupported Binary Body
+
+Binary request bodies are not transformed.
+
+**Before replacement:**
+
+```text
+Body type: ArrayBuffer
+Bytes (hexadecimal): 00 01 02 FF
+```
+
+**After replacement:**
+
+```text
+Body type: ArrayBuffer
+Bytes (hexadecimal): 00 01 02 FF
+```
+
+The original binary body passes through unchanged, even if the request targets a catalog-matched tracker.
+
+#### Configuration and Privacy Limitations
+
+Transformations only apply after Decoy Mode is enabled and its asynchronous session configuration has reached the main-world interceptor. Requests made before configuration is ready may pass through without replacement.
+
+Replacing supported identifiers does **not** conceal IP addresses, network or TLS metadata, request timing, headers, cookies, or other fingerprinting signals. Decoy Mode is not an anonymity mechanism.
+
+These examples do not initiate network activity, create synthetic events, or modify transaction-related information.
+
 The popup increments **Decoyed on this page** only when at least one supported query or body field was replaced. Intercepted requests with no supported fields are not counted.
 
 ## Transaction Safety
