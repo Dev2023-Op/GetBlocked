@@ -1,0 +1,132 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "adnxs.com",
+        "adroll.com",
+        "ads-twitter.com",
+        "ads.linkedin.com",
+        "ads.tiktok.com",
+        "adsrvr.org",
+        "amplitude.com",
+        "analytics.pinterest.com",
+        "analytics.tiktok.com",
+        "analytics.twitter.com",
+        "api.segment.io",
+        "awin1.com",
+        "bat.bing.com",
+        "bidswitch.net",
+        "casalemedia.com",
+        "cj.com",
+        "clarity.ms",
+        "contentsquare.net",
+        "crazyegg.com",
+        "criteo.com",
+        "ct.pinterest.com",
+        "customer.io",
+        "decibelinsight.net",
+        "doubleclick.net",
+        "drip.com",
+        "emjcd.com",
+        "facebook.net",
+        "fullstory.com",
+        "google-analytics.com",
+        "googleadservices.com",
+        "googlesyndication.com",
+        "googletagmanager.com",
+        "googletagservices.com",
+        "heap.io",
+        "heapanalytics.com",
+        "hotjar.com",
+        "hotjar.io",
+        "hs-analytics.net",
+        "hs-banner.com",
+        "impactradius-event.com",
+        "impactradius.com",
+        "inspectlet.com",
+        "klaviyo.com",
+        "list-manage.com",
+        "logrocket.com",
+        "luckyorange.com",
+        "matomo.cloud",
+        "media.net",
+        "mixpanel.com",
+        "mouseflow.com",
+        "openx.net",
+        "outbrain.com",
+        "partnerize.com",
+        "posthog.com",
+        "pubmatic.com",
+        "quantserve.com",
+        "rubiconproject.com",
+        "rudderlabs.com",
+        "sc-static.net",
+        "scorecardresearch.com",
+        "segment.com",
+        "sharethrough.com",
+        "skimresources.com",
+        "smartlook.com",
+        "snap.licdn.com",
+        "static.ads-twitter.com",
+        "stats.g.doubleclick.net",
+        "taboola.com",
+        "teads.tv",
+        "tr.snapchat.com"
+      ],
+      "domainType": "thirdParty",
+      "resourceTypes": [
+        "csp_report",
+        "font",
+        "image",
+        "media",
+        "object",
+        "other",
+        "ping",
+        "script",
+        "stylesheet",
+        "sub_frame",
+        "websocket",
+        "webtransport",
+        "xmlhttprequest"
+      ]
+    }
+  },
+  {
+    "id": 1000,
+    "priority": 2,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "transform": {
+          "queryTransform": {
+            "removeParams": [
+              "utm_source",
+              "utm_medium",
+              "utm_campaign",
+              "utm_content",
+              "utm_term",
+              "fbclid",
+              "gclid",
+              "dclid",
+              "mc_cid",
+              "mc_eid",
+              "igshid",
+              "affiliate_id"
+            ]
+          }
+        }
+      }
+    },
+    "condition": {
+      "regexFilter": "[?&](utm_source|utm_medium|utm_campaign|utm_content|utm_term|fbclid|gclid|dclid|mc_cid|mc_eid|igshid|affiliate_id)=",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  }
+]
