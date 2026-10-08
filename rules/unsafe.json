@@ -1,14 +1,81 @@
 [
-  {
-    "id": 1,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "requestDomains": [
-        "",
-      ]
-    }
-  }
+	{
+		"id": 1,
+		"priority": 1,
+		"action": {
+			"type": "block"
+		},
+		"condition": {
+			"requestDomains": [
+				"nabassisthelp.com",
+				"getbestanswers.com",
+				"weartheshield.com",
+				"andersongameplays.com.br",
+				"maxgetcontact.com",
+				"payme-paypal.com",
+				"checkout-tws.org",
+				"onetrade.ltd",
+				"bitnotex.com",
+				"regalbusways.com",
+				"factura-acueducto.com.co",
+				"messebau-stangier.top",
+				"semfila.viapass.sbs",
+				"spectrum-email-update.weeblysite.com",
+				"formularioseuseguroauto.online",
+				"252329coinbase.com",
+				"liberaagora.top",
+				"consultaexpressdomi--pamelalorzano.replit.app",
+				"beneficiosbhdonline.iceiy.com",
+				"sitesecure2026.wuaze.com",
+				"zedelivery.food",
+				"super-clientes-app.online,
+				"concursopm.org",
+				"workr.tech",
+				"cloudrich777.github.io",
+				"entregadorparceiro.vercel.app",
+				"rexawin.com",
+				"merowin.com",
+				"rezowin156.pro",
+				"maxspin.pro",
+				"cordalas.sa.com",
+				"picsmashplugin.com",
+				"ahilab.co",
+				"vueloshorizonte.com.co",
+				"idn88bet.com",
+				"dolphinblower.in
+				"clicknce.com.co",
+				"scooterhouse.nl",
+				"doga-mori.info",
+				"moreloadsdprmns.za.com",
+				"news7today.in",
+				"codenity.my",
+				"dpmigwalior.in",
+				"absenth.me",
+				"repelis.in",
+				"digital-circle.co",
+				"divanis.nl",
+				"deserene.nl",
+				"s4jobs.in",
+				"izmirtel.com",
+				"tstnews.net",
+				"assistenciatecnica.me",
+				"izom.in",
+				"motor-andaluz.net",
+				"monarcaclub.com.co",
+				"lv88luck.com",
+				"hondajakarta.me",
+				"nisaya.nl",
+				"doga-mori.info",
+				"789win-36.com",
+				"thanhca.biz",
+				"go8.com",
+				"go8com.pages.dev",
+				"iogame.games",
+				"airy.travel",
+				"tr.bets10guncegirisler26.com",
+				"tr.bets10anlikgirisler.com",
+				"1334bets10.com"
+			]
+		}
+	}
 ]
