@@ -10,6 +10,8 @@ The list is independent of the tracker catalog. Decoy Mode changes only tracker 
 
 The initial 67 unique domains come from [Dev2023-Op's `rules/unsafe.json`](https://github.com/Dev2023-Op/GetBlocked/blob/769ef46d5a26358b274a7844879837e3d8ff835f/rules/unsafe.json), at commit `769ef46d5a26358b274a7844879837e3d8ff835f`. One duplicate `doga-mori.info` entry was removed. That fork's rule file was not registered in the manifest, so merely adding it did not activate blocking.
 
+[PR #57](https://github.com/alex-w-developer/GetBlocked/pull/57) removed 24 domains that the contributor reported as dead links. The current snapshot retains the 43 domains from [the contributor's updated list](https://github.com/Dev2023-Op/GetBlocked/blob/4ba723eb3b85c8ad3d037a5467527e838b594848/rules/unsafe.json). These removals are applied to the source list and regenerated, preserving the opt-in ruleset and its blocking behavior. Domain availability and classifications have not been independently verified.
+
 The original file provided no per-domain evidence, classification sources, or report dates. Its domains are therefore described as unverified community reports and remain opt-in. Attribution and the source snapshot are recorded in [shared/unsafe-domains.json](../shared/unsafe-domains.json).
 
 ## Which File To Edit
