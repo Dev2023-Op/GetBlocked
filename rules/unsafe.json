@@ -1,0 +1,72 @@
+[
+  {
+    "id": 2000,
+    "priority": 3,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "1334bets10.com",
+        "789win-36.com",
+        "ahilab.co",
+        "assistenciatecnica.me",
+        "beneficiosbhdonline.iceiy.com",
+        "clicknce.com.co",
+        "cloudrich777.github.io",
+        "concursopm.org",
+        "consultaexpressdomi--pamelalorzano.replit.app",
+        "cordalas.sa.com",
+        "dolphinblower.in",
+        "dpmigwalior.in",
+        "entregadorparceiro.vercel.app",
+        "getbestanswers.com",
+        "go8.com",
+        "go8com.pages.dev",
+        "idn88bet.com",
+        "iogame.games",
+        "izmirtel.com",
+        "liberaagora.top",
+        "lv88luck.com",
+        "maxgetcontact.com",
+        "maxspin.pro",
+        "merowin.com",
+        "monarcaclub.com.co",
+        "news7today.in",
+        "nisaya.nl",
+        "onetrade.ltd",
+        "picsmashplugin.com",
+        "repelis.in",
+        "rexawin.com",
+        "rezowin156.pro",
+        "scooterhouse.nl",
+        "sitesecure2026.wuaze.com",
+        "super-clientes-app.online",
+        "thanhca.biz",
+        "tr.bets10anlikgirisler.com",
+        "tr.bets10guncegirisler26.com",
+        "tstnews.net",
+        "vueloshorizonte.com.co",
+        "weartheshield.com",
+        "workr.tech",
+        "zedelivery.food"
+      ],
+      "resourceTypes": [
+        "main_frame",
+        "csp_report",
+        "font",
+        "image",
+        "media",
+        "object",
+        "other",
+        "ping",
+        "script",
+        "stylesheet",
+        "sub_frame",
+        "websocket",
+        "webtransport",
+        "xmlhttprequest"
+      ]
+    }
+  }
+]
